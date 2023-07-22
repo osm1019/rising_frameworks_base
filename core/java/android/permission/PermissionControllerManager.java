@@ -81,8 +81,8 @@ import java.util.function.IntConsumer;
 public final class PermissionControllerManager {
     private static final String TAG = PermissionControllerManager.class.getSimpleName();
 
-    private static final long REQUEST_TIMEOUT_MILLIS = 60000;
-    private static final long UNBIND_TIMEOUT_MILLIS = 10000;
+    private static final long REQUEST_TIMEOUT_MILLIS = 60000L;
+    private static final long UNBIND_TIMEOUT_MILLIS = 60000L;
     private static final int CHUNK_SIZE = 4 * 1024;
 
     private static final Object sLock = new Object();
