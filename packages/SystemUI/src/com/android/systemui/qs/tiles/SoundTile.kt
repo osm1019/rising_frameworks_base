@@ -88,11 +88,34 @@ class SoundTile @Inject constructor(
         mListening = listening
         if (!listening) {
             mContext.unregisterReceiver(mReceiver)
+        } else {
+            val filter = IntentFilter().apply {
+                addAction(AudioManager.INTERNAL_RINGER_MODE_CHANGED_ACTION)
+            }
+            mContext.registerReceiver(mReceiver, filter)
         }
     }
 
     override protected fun handleClick(@Nullable view: View?) {
-        updateState()
+        val ringerMode = mAudioManager.ringerModeInternal
+        val newRingerMode = when (ringerMode) {
+            AudioManager.RINGER_MODE_NORMAL -> {
+                AudioManager.RINGER_MODE_VIBRATE
+            }
+            AudioManager.RINGER_MODE_VIBRATE -> {
+                mZenController.setZen(Global.ZEN_MODE_ALARMS, null, TAG)
+                AudioManager.RINGER_MODE_SILENT
+            }
+            AudioManager.RINGER_MODE_SILENT -> {
+                mZenController.setZen(Global.ZEN_MODE_OFF, null, TAG)
+                AudioManager.RINGER_MODE_NORMAL
+            }
+            else -> return
+        }
+        mAudioManager.ringerModeInternal = newRingerMode
+        val intent = Intent(AudioManager.INTERNAL_RINGER_MODE_CHANGED_ACTION)
+        mContext.sendBroadcast(intent)
+        refreshState()
     }
 
     override fun handleLongClick(@Nullable view: View?) {
@@ -101,25 +124,6 @@ class SoundTile @Inject constructor(
 
     override fun getLongClickIntent(): Intent? {
         return null
-    }
-
-    private fun updateState() {
-        val ringerMode = mAudioManager.ringerModeInternal
-        val newRingerMode = when (ringerMode) {
-            AudioManager.RINGER_MODE_NORMAL -> {
-                mZenController.setZen(Global.ZEN_MODE_OFF, null, TAG)
-                AudioManager.RINGER_MODE_SILENT
-            }
-            AudioManager.RINGER_MODE_VIBRATE -> {
-                mZenController.setZen(Global.ZEN_MODE_ALARMS, null, TAG)
-                AudioManager.RINGER_MODE_NORMAL
-            }
-            AudioManager.RINGER_MODE_SILENT -> {
-                AudioManager.RINGER_MODE_VIBRATE
-            }
-            else -> return
-        }
-        mAudioManager.ringerModeInternal = newRingerMode
     }
 
     override fun getTileLabel(): CharSequence {
