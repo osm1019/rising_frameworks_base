@@ -372,11 +372,13 @@ abstract public class ManagedServices {
             }
         }
 
-        pw.println("    All " + getCaption() + "s (" + mEnabledServicesForCurrentProfiles.size()
-                + ") enabled for current profiles:");
-        for (ComponentName cmpt : mEnabledServicesForCurrentProfiles) {
-            if (filter != null && !filter.matches(cmpt)) continue;
-            pw.println("      " + cmpt);
+        synchronized (mDefaultsLock) {
+            pw.println("    All " + getCaption() + "s (" + mEnabledServicesForCurrentProfiles.size()
+                    + ") enabled for current profiles:");
+            for (ComponentName cmpt : mEnabledServicesForCurrentProfiles) {
+                if (filter != null && !filter.matches(cmpt)) continue;
+                pw.println("      " + cmpt);
+            }
         }
 
         synchronized (mMutex) {
