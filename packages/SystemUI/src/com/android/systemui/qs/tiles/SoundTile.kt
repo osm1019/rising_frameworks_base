@@ -68,6 +68,7 @@ class SoundTile @Inject constructor(
             refreshState()
         }
     }
+    private var mLastZenMode: Int = Global.ZEN_MODE_OFF
 
     init {
         val filter = IntentFilter().apply {
@@ -103,11 +104,12 @@ class SoundTile @Inject constructor(
                 AudioManager.RINGER_MODE_VIBRATE
             }
             AudioManager.RINGER_MODE_VIBRATE -> {
+                mLastZenMode = mZenController.zen
                 mZenController.setZen(Global.ZEN_MODE_ALARMS, null, TAG)
                 AudioManager.RINGER_MODE_SILENT
             }
             AudioManager.RINGER_MODE_SILENT -> {
-                mZenController.setZen(Global.ZEN_MODE_OFF, null, TAG)
+                mZenController.setZen(mLastZenMode, null, TAG)
                 AudioManager.RINGER_MODE_NORMAL
             }
             else -> return
