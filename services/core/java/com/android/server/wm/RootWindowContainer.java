@@ -1063,6 +1063,12 @@ class RootWindowContainer extends WindowContainer<DisplayContent>
      */
     boolean handleNotObscuredLocked(WindowState w, boolean obscured, boolean syswin) {
         final boolean onScreen = w.isOnScreen();
+        final boolean isDrawnAndVisible = w.mActivityRecord != null && w.mActivityRecord.firstWindowDrawn
+                && w.mActivityRecord.isVisibleRequested();
+        final boolean canBeSeen = w.isDisplayed()
+                || (w.mActivityRecord != null && w.mActivityRecord.isVisibleRequested()
+                && w.mActivityRecord.getWindowingMode() == WINDOWING_MODE_MULTI_WINDOW
+                && !w.mDestroying && w.isVisibleByPolicy() && w.mIsRedrawRequestedToResizing);
         boolean displayHasContent = false;
 
         ProtoLog.d(WM_DEBUG_KEEP_SCREEN_ON,
@@ -1077,15 +1083,16 @@ class RootWindowContainer extends WindowContainer<DisplayContent>
             ProtoLog.d(WM_DEBUG_KEEP_SCREEN_ON, "mUserActivityTimeout set to %d",
                     mUserActivityTimeout);
         }
-        if (w.isDrawn() || (w.mActivityRecord != null && w.mActivityRecord.firstWindowDrawn
-                && w.mActivityRecord.isVisibleRequested())) {
+        if (w.isDrawn() || isDrawnAndVisible) {
             if (!syswin && w.mAttrs.buttonBrightness >= 0
                     && Float.isNaN(mButtonBrightnessOverride)) {
                 mButtonBrightnessOverride = w.mAttrs.buttonBrightness;
             }
-            if (!syswin && w.mAttrs.screenBrightness >= 0
-                    && Float.isNaN(mScreenBrightnessOverride)) {
-                mScreenBrightnessOverride = w.mAttrs.screenBrightness;
+            if (canBeSeen) {
+                if (!syswin && w.mAttrs.screenBrightness >= 0
+                        && Float.isNaN(mScreenBrightnessOverride)) {
+                    mScreenBrightnessOverride = w.mAttrs.screenBrightness;
+                }
             }
 
             // This function assumes that the contents of the default display are processed first
