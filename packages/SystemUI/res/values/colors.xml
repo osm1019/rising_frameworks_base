@@ -274,4 +274,6 @@
     <color name="shadow">#14000000</color>
     <color name="neumorph_outline_start">#FFBDBDBD</color>
     <color name="neumorph_outline_end">#FFF0F0F0</color>
+    <color name="holo_blue_light_chip">@android:color/system_accent1_600</color>
+    <color name="holo_green_light_chip">@android:color/system_accent3_600</color>
 </resources>
