@@ -5409,15 +5409,13 @@ public final class NotificationPanelViewController implements Dumpable {
     }
 
     public void hideReticker() {
+        if (!mReTickerStatus) return;
         animateReticker(View.GONE, 175, new AccelerateDecelerateInterpolator());
         reTickerViewVisibility();
     }
 
     public void reTickerViewVisibility() {
-        if (!mReTickerStatus) {
-            hideReticker();
-            return;
-        }
+        if (!mReTickerStatus) return;
         mNotificationStackScroller.setVisibility(getExpandedFraction() == 0 ? View.GONE : View.VISIBLE);
         if (getExpandedFraction() > 0) {
             mRetickerView.setVisibility(View.GONE);
