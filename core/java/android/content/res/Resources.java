@@ -2684,74 +2684,50 @@ public class Resources {
         try {
             final Resources sysRes = Resources.getSystem();
             sysRes.startPreloading();
+
             if (PRELOAD_RESOURCES) {
                 Log.i(TAG, "Preloading resources...");
 
-                long startTime = SystemClock.uptimeMillis();
-                TypedArray ar = sysRes.obtainTypedArray(
-                        com.android.internal.R.array.preloaded_drawables);
-                int numberOfEntries = preloadDrawables(sysRes, ar);
-                ar.recycle();
-                Log.i(TAG, "...preloaded " + numberOfEntries + " resources in "
-                        + (SystemClock.uptimeMillis() - startTime) + "ms.");
+                preloadDrawables(sysRes, com.android.internal.R.array.preloaded_drawables);
+                preloadColorStateLists(sysRes, com.android.internal.R.array.preloaded_color_state_lists);
 
-                startTime = SystemClock.uptimeMillis();
-                ar = sysRes.obtainTypedArray(
-                        com.android.internal.R.array.preloaded_color_state_lists);
-                numberOfEntries = preloadColorStateLists(sysRes, ar);
-                ar.recycle();
-                Log.i(TAG, "...preloaded " + numberOfEntries + " resources in "
-                        + (SystemClock.uptimeMillis() - startTime) + "ms.");
-
-                if (sysRes.getBoolean(
-                        com.android.internal.R.bool.config_freeformWindowManagement)) {
-                    startTime = SystemClock.uptimeMillis();
-                    ar = sysRes.obtainTypedArray(
-                            com.android.internal.R.array.preloaded_freeform_multi_window_drawables);
-                    numberOfEntries = preloadDrawables(sysRes, ar);
-                    ar.recycle();
-                    Log.i(TAG, "...preloaded " + numberOfEntries + " resource in "
-                            + (SystemClock.uptimeMillis() - startTime) + "ms.");
+                if (sysRes.getBoolean(com.android.internal.R.bool.config_freeformWindowManagement)) {
+                    preloadDrawables(sysRes, com.android.internal.R.array.preloaded_freeform_multi_window_drawables);
                 }
             }
+
             sysRes.finishPreloading();
         } catch (RuntimeException e) {
             Log.w(TAG, "Failure preloading resources", e);
         }
     }
 
-    private static int preloadColorStateLists(Resources resources, TypedArray ar) {
+    private static void preloadDrawables(Resources resources, int arrayId) {
+        long startTime = SystemClock.uptimeMillis();
+        TypedArray ar = resources.obtainTypedArray(arrayId);
         final int numberOfEntries = ar.length();
         for (int i = 0; i < numberOfEntries; i++) {
             int id = ar.getResourceId(i, 0);
-
-            if (id != 0) {
-                if (resources.getColorStateList(id, null) == null) {
-                    throw new IllegalArgumentException(
-                            "Unable to find preloaded color resource #0x"
-                                    + Integer.toHexString(id)
-                                    + " (" + ar.getString(i) + ")");
-                }
+            if (id != 0 && resources.getDrawable(id, null) == null) {
+                throw new IllegalArgumentException("Unable to find preloaded drawable resource #0x" + Integer.toHexString(id));
             }
         }
-        return numberOfEntries;
+        ar.recycle();
+        Log.i(TAG, "...preloaded " + numberOfEntries + " drawables in " + (SystemClock.uptimeMillis() - startTime) + "ms.");
     }
 
-    private static int preloadDrawables(Resources resources, TypedArray ar) {
+    private static void preloadColorStateLists(Resources resources, int arrayId) {
+        long startTime = SystemClock.uptimeMillis();
+        TypedArray ar = resources.obtainTypedArray(arrayId);
         final int numberOfEntries = ar.length();
         for (int i = 0; i < numberOfEntries; i++) {
             int id = ar.getResourceId(i, 0);
-
-            if (id != 0) {
-                if (resources.getDrawable(id, null) == null) {
-                    throw new IllegalArgumentException(
-                            "Unable to find preloaded drawable resource #0x"
-                                    + Integer.toHexString(id)
-                                    + " (" + ar.getString(i) + ")");
-                }
+            if (id != 0 && resources.getColorStateList(id, null) == null) {
+                throw new IllegalArgumentException("Unable to find preloaded color resource #0x" + Integer.toHexString(id));
             }
         }
-        return numberOfEntries;
+        ar.recycle();
+        Log.i(TAG, "...preloaded " + numberOfEntries + " color state lists in " + (SystemClock.uptimeMillis() - startTime) + "ms.");
     }
 
     /**
