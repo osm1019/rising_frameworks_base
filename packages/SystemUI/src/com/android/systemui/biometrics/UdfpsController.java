@@ -1154,7 +1154,8 @@ public class UdfpsController implements DozeReceiver, Dumpable {
             return;
         }
 
-        updateViewDimAmount(true);
+        // updateViewDimAmount(true);
+        
         if (!mOverlay.matchesRequestId(requestId)) {
             Log.w(TAG, "Mismatched fingerDown: " + requestId
                     + " current: " + mOverlay.getRequestId());
@@ -1197,6 +1198,7 @@ public class UdfpsController implements DozeReceiver, Dumpable {
         final UdfpsView view = mOverlay.getOverlayView();
         if (view != null && isOptical()) {
             view.configureDisplay(() -> {
+                updateViewDimAmount(true);
                 if (mAlternateTouchProvider != null) {
                     mBiometricExecutor.execute(() -> {
                         mAlternateTouchProvider.onUiReady();
