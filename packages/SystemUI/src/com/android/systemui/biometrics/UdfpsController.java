@@ -1103,8 +1103,13 @@ public class UdfpsController implements DozeReceiver, Dumpable {
             return;
         }
 
+<<<<<<< HEAD
         updateViewDimAmount(true);
 
+=======
+        // updateViewDimAmount(true);
+        
+>>>>>>> db4dda8666e2 (Salami : Fixed FOD flashing (Also need to nuke HBM in prebuilt FP_HAL))
         if (!mOverlay.matchesRequestId(requestId)) {
             Log.w(TAG, "Mismatched fingerDown: " + requestId
                     + " current: " + mOverlay.getRequestId());
@@ -1147,6 +1152,7 @@ public class UdfpsController implements DozeReceiver, Dumpable {
         final UdfpsView view = mOverlay.getOverlayView();
         if (view != null && isOptical()) {
             view.configureDisplay(() -> {
+                updateViewDimAmount(true);
                 if (mAlternateTouchProvider != null) {
                     mBiometricExecutor.execute(() -> {
                         mAlternateTouchProvider.onUiReady();
