@@ -633,9 +633,6 @@
     -->
     <integer name="config_udfpsHbmType">0</integer>
 
-  <!-- File path to use for getting brightness for framework dimming.
-         If none brightness is retrieved from framework. -->
-    <string name="config_udfpsFrameworkDimmingBrightnessPath" translatable="false">/sys/kernel/oplus_display/oplus_brightness</string>
 
 
     <!-- The time (in ms) needed to trigger the lock icon view's long-press affordance -->
