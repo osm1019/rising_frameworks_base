@@ -622,7 +622,7 @@
     <!-- The amount of delay to add when disabling the dimming.
          This is used to prevent flickers due to the dimming being disabled
          before the screen has had chance to switch out of HBM mode -->
-    <integer name="config_udfpsDimmingDisableDelay">35</integer>
+    <integer name="config_udfpsDimmingDisableDelay">30</integer>
 
     <integer name="config_udfpsDimmingBrightnessMin">0</integer>
     <integer name="config_udfpsDimmingBrightnessMax">0</integer>
@@ -631,11 +631,12 @@
             0 - GLOBAL HBM
             1 - LOCAL HBM
     -->
-    <integer name="config_udfpsHbmType">1</integer>
+    <integer name="config_udfpsHbmType">0</integer>
 
   <!-- File path to use for getting brightness for framework dimming.
          If none brightness is retrieved from framework. -->
-    <string name="config_udfpsFrameworkDimmingBrightnessPath" translatable="false">/sys/kernel/oplus_display/hbm</string>
+    <string name="config_udfpsFrameworkDimmingBrightnessPath" translatable="false">/sys/kernel/oplus_display/oplus_brightness</string>
+
 
     <!-- The time (in ms) needed to trigger the lock icon view's long-press affordance -->
     <integer name="config_lockIconLongPress" translatable="false">200</integer>
